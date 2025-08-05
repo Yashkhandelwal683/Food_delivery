@@ -6,9 +6,9 @@ const OrderPage = () => {
   const cartItems = useSelector((state) => state.cart);
   const dispatch = useDispatch();
 
-  // Fixed shop details
+ 
   const shopDetails = {
-    shopName: 'A1 Kirana Store',
+    shopName: 'KHANDELWAL MISTHAN BHANDAR & RESTAURANT',
     gstNumber: '09ABCDE1234Z5X'
   };
 
@@ -65,7 +65,7 @@ const OrderPage = () => {
         />
         <select
           name="deliveryType"
-          className="p-2 border rounded"
+          className="p-2 border rounded align-middle font-extralight items-center flex flex justify-center"
           onChange={handleChange}
           value={customerDetails.deliveryType}
         >
