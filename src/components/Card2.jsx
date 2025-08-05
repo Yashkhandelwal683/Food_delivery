@@ -8,7 +8,7 @@ const OrderPage = () => {
 
  
   const shopDetails = {
-    shopName: 'KHANDELWAL MISTHAN BHANDAR & RESTAURANT',
+    shopName: 'KHANDELWAL HOTEL AND  RESTAURANT',
     gstNumber: '09ABCDE1234Z5X'
   };
 
