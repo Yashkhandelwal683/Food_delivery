@@ -1,30 +1,47 @@
-import React from 'react'
-import image1 from "../assets/image1.avif"
-import { LuLeafyGreen } from "react-icons/lu";
-import { GiChickenOven } from "react-icons/gi";
-import { useDispatch } from 'react-redux';
-import { AddItem } from '../redux/cartSlice';
-import { toast } from 'react-toastify';
-function Card({name,image,id,price,type}) {
-   let dispatch=useDispatch() 
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addToCart, incrementQty, decrementQty } from '../redux/cartSlice';
+
+function Card({ id, name, image, price, type }) {
+  const dispatch = useDispatch();
+  const cartItems = useSelector(state => state.cart.items);
+  const itemInCart = cartItems.find(i => i.id === id);
+
   return (
-    <div className='w-[300px] h-[400px] bg-white p-3 rounded-lg flex flex-col gap-3 shadow-lg hover:border-2 border-green-300 '>
-      <div className='w-[100%] h-[60%] overflow-hidden rounded-lg'>
-<img src={image} alt="" className='object-cover'/>
-      </div>
-      <div className='text-2xl font-semibold'>
-{name}
-      </div>
-      <div className='w-full flex justify-between items-center'>
-<div className='text-lg font-bold text-green-500'>Rs {price}/-</div>
-<div className='flex justify-center items-center gap-2 text-green-500 text-lg font-semibold'>{type==="veg"?<LuLeafyGreen />:<GiChickenOven />} <span>{type}</span></div>
-      </div>
-      <button className='w-full p-3 rounded-lg bg-green-500 text-white hover:bg-green-400 transition-all' onClick={()=>{dispatch(AddItem({id:id, name:name,price:price,image:image,qty:1}));
-      toast.success("item added")
-}
-}>Add to dish</button>
+    <div className="w-[250px] p-4 rounded-lg bg-white shadow-md hover:shadow-lg transition-all flex flex-col items-center">
+      <img src={image} alt={name} className="w-full h-[150px] object-cover rounded-lg" />
+      <h2 className="text-lg font-semibold mt-2">{name}</h2>
+      <p className="text-green-500 font-bold">₹{price}</p>
+      <p className="text-gray-500 text-sm">{type}</p>
+
+      {itemInCart ? (
+        <div className="flex items-center gap-3 mt-3">
+          <button
+            className="bg-red-400 text-white px-3 py-1 rounded-full"
+            onClick={() => dispatch(decrementQty(id))}
+          >
+            -
+          </button>
+          <span className="text-lg font-semibold">{itemInCart.qty}</span>
+          <button
+            className="bg-green-500 text-white px-3 py-1 rounded-full"
+            onClick={() => dispatch(incrementQty(id))}
+          >
+            +
+          </button>
+        </div>
+      ) : (
+        <button
+          className="mt-3 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+          onClick={() =>
+            dispatch(addToCart({ id, name, image, price }))
+          }
+        >
+          Add to Cart
+        </button>
+      )}
     </div>
-  )
+  );
 }
 
-export default Card
+export default Card;
