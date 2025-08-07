@@ -1,4 +1,3 @@
-// src/components/CartBillSummary.jsx
 import React from 'react';
 
 const CartBillSummary = ({ cartItems, deliveryType, customerDetails, shopDetails }) => {

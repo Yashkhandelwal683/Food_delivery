@@ -41,6 +41,10 @@ import { GiHamburger } from "react-icons/gi";
     name:"burger",
     icon:<GiHamburger className="w-[60px] h-[60px] text-green-600"/>,
 },
+{
+    id:8,
+    name:"desserts",
+    icon:<TiThSmallOutline className="w-[60px] h-[60px] text-green-600"/>, } 
 
 ]
 

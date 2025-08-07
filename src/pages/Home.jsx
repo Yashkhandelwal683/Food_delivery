@@ -9,6 +9,8 @@ import { RxCross2 } from 'react-icons/rx';
 import { useSelector, useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import { ClearCart, incrementQty, decrementQty } from '../redux/cartSlice';
+import qrImage from '../assets/qr.png'; 
+
 
 
 function Home() {
@@ -101,7 +103,8 @@ function Home() {
       </div>
 
       {/* CART */}
-      <div className={`w-full md:w-[40vw] fixed top-0 right-0 bg-white shadow-xl p-6 transition-all duration-500 overflow-auto z-50 ${showCart ? 'translate-x-0' : 'translate-x-full'}`}>
+      <div className={`w-full md:w-[40vw] fixed top-0 right-0 h-screen bg-white shadow-xl p-6 transition-all duration-500 overflow-y-auto z-50 ${showCart ? 'translate-x-0' : 'translate-x-full'}`}>
+
         <header className='w-full flex justify-between items-center'>
           <span className='text-green-400 text-[18px] font-semibold'>Order items</span>
           <RxCross2 className='w-[30px] h-[30px] text-green-400 cursor-pointer' onClick={() => setShowCart(false)} />
@@ -109,7 +112,7 @@ function Home() {
 
         {items.length > 0 ? (
           <>
-            <div className="mt-4 bg-slate-100 p-4 rounded shadow-md flex flex-col justify-center items-center hover:bg-red-400 hover:text-white transition-colors duration-300">
+            <div className="mt-4 bg-slate-100 p-4 rounded shadow-md flex flex-col justify-center items-center hover:bg-emerald-600 hover:text-white transition-colors duration-300">
               <h2 className="font-bold text-lg">Khandelwal Restro</h2>
               <p>Krishna Nagar, India</p>
               <p>Phone: 7500755265</p>
@@ -164,9 +167,10 @@ function Home() {
                 <input placeholder='Enter UPI ID' value={upiId} onChange={e => setUpiId(e.target.value)} className='border p-2 rounded' />
               )}
 
-              {paymentMethod === 'paytm' && (
-                <img src='https://upload.wikimedia.org/wikipedia/commons/f/f0/PhonePe_Logo.svg' alt="QR Code" className='w-40 h-40 mx-auto' />
-              )}
+             {paymentMethod === 'paytm' && (
+  <img src={qrImage} alt="QR Code" className='w-100 h-80 mx-auto' />
+)}
+
 
               {paymentMethod === 'card' && (
                 <div className='flex flex-col gap-2'>
