@@ -84,7 +84,7 @@ function Home() {
         <div className='flex flex-wrap justify-center items-center gap-5 w-full'>
           {Categories.map(item => (
             <div key={item.id} onClick={() => filter(item.name)}
-              className='w-[140px] h-[150px] bg-white flex flex-col items-start gap-5 p-5 text-[20px] font-semibold text-gray-600 rounded-lg shadow-xl hover:bg-green-200 cursor-pointer'>
+              className='w-[160px] h-[150px] bg-white flex flex-col items-start gap-5 p-5 text-[20px] flex justify-center items-center font-semibold text-gray-600 rounded-lg shadow-xl hover:bg-slate-400 cursor-pointer'>
               {item.icon}
               {item.name}
             </div>
@@ -117,6 +117,12 @@ function Home() {
               <p>Krishna Nagar, India</p>
               <p>Phone: 7500755265</p>
               <p>GSTIN: 22ABCDE1234F1Z5</p>
+              <p>Order ID: {Math.floor(Math.random() * 100000)}</p>
+              <p>Order Date: {new Date().toLocaleDateString()}</p>
+              <p>Order Time: {new Date().toLocaleTimeString()}</p>
+              <p>Payment Method: {paymentMethod}</p>
+              <p>Delivery Type: {deliveryType}</p>
+
             </div>
 
             <div className='mt-4 flex flex-col gap-2 hover:bg-red-600 p-4 rounded box-border border-black'>
@@ -168,9 +174,10 @@ function Home() {
               )}
 
              {paymentMethod === 'paytm' && (
-  <img src={qrImage} alt="QR Code" className='w-100 h-80 mx-auto' />
-)}
-
+                <div className='flex flex-col items-center'>
+                  <img src={qrImage} alt="QR Code" className='w-100 h-80 mx-auto' />
+                </div>
+              )}    
 
               {paymentMethod === 'card' && (
                 <div className='flex flex-col gap-2'>

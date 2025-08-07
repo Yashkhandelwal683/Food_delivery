@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { ClearCart, IncreaseQty, DecreaseQty } from '../redux/cartSlice';
+import { ClearCart, incrementQty, decrementQty } from '../redux/cartSlice';
 import { toast } from 'react-toastify';
 
 const OrderPage = () => {

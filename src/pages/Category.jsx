@@ -29,7 +29,7 @@ import { GiHamburger } from "react-icons/gi";
 {
     id:5,
     name:"main_course",
-    icon:<MdOutlineFoodBank className="w-[60px] h-[60px] text-green-600"/>,
+    icon:<MdOutlineFoodBank className="w-[100px] h-[80px] text-green-600"/>,
 },
 {
     id:6,
@@ -44,7 +44,7 @@ import { GiHamburger } from "react-icons/gi";
 {
     id:8,
     name:"desserts",
-    icon:<TiThSmallOutline className="w-[60px] h-[60px] text-green-600"/>, } 
+    icon:<TiThSmallOutline className="w-[100px] h-[60px] text-green-600"/>, } 
 
 ]
 
