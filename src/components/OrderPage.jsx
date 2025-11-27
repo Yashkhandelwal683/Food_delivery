@@ -4,6 +4,49 @@ import { ClearCart, incrementQty, decrementQty } from '../redux/cartSlice';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
+const validateCustomerDetails = (details) => {
+    const errors = {};
+
+  
+    const name = details.name ? details.name.trim() : '';
+    const nameWordCount = name.split(/\s+/).filter(word => word.length > 0).length;
+ 
+    const specialCharRegex = /[^a-zA-Z\s]/; 
+
+    if (!name) {
+        errors.name = "Customer Name is required.";
+    } else {
+        if (specialCharRegex.test(name)) {
+            errors.name = "Name should only contain letters and spaces (no special characters or numbers).";
+        }
+        if (!errors.name && nameWordCount < 5) {
+            errors.name = "Name must contain at least 5 words.";
+        }
+    }
+
+ 
+    const mobile = details.mobile ? String(details.mobile).trim() : '';
+    const mobileRegex = /^\d{10}$/; // Exactly 10 digits
+
+    if (!mobileRegex.test(mobile)) {
+        errors.mobile = "Mobile number must be a 10-digit number (no special characters).";
+    }
+
+    // 3. Address Validation (Conditional for Home Delivery): Must be specific (min 10 chars).
+    if (details.deliveryType === 'homedelivery') {
+        const address = details.address ? details.address.trim() : '';
+        if (address.length < 10) {
+            errors.address = "Address is required and must be specific (minimum 10 characters).";
+        }
+    }
+
+    return errors;
+};
+
+// =============================================================
+// ORDER PAGE COMPONENT
+// =============================================================
+
 const OrderPage = () => {
   const cartItems = useSelector((state) => state.cart.items);
   const dispatch = useDispatch();
@@ -21,8 +64,13 @@ const OrderPage = () => {
     address: '',
     deliveryType: 'homedelivery',
   });
+  
+  // State to hold and display validation errors in the form
+  const [formErrors, setFormErrors] = useState({}); 
 
   const handleChange = (e) => {
+    // Clear previous error for the field being changed
+    setFormErrors(prev => ({ ...prev, [e.target.name]: undefined })); 
     setCustomerDetails({ ...customerDetails, [e.target.name]: e.target.value });
   };
 
@@ -40,15 +88,30 @@ const OrderPage = () => {
     };
   };
 
+  // ⭐️ UPDATED PLACE ORDER FUNCTION WITH ENFORCED VALIDATION ⭐️
   const handlePlaceOrder = () => {
-    if (!customerDetails.name || !customerDetails.mobile || (customerDetails.deliveryType === 'homedelivery' && !customerDetails.address)) {
-      toast.error("Please fill all customer details.");
+    if (cartItems.length === 0) {
+      toast.error("Cart is empty. Please add items before placing an order.");
       return;
     }
+    
+    const errors = validateCustomerDetails(customerDetails);
+    setFormErrors(errors); // Update state to display errors in the form
 
+    // Check if there are any errors. If yes, stop the process.
+    if (Object.keys(errors).length > 0) {
+      toast.error("Please correct the customer details to proceed.");
+      
+      // Optionally show specific toast messages for the first few errors
+      Object.values(errors).slice(0, 3).forEach(err => toast.error(`Error: ${err}`));
+
+      return; // 🛑 VALIDATION ENFORCEMENT: Order stops here.
+    }
+
+    // --- Order Placement Logic (If validation passed) ---
+    
     const totals = calculateTotal();
     
-    // Generating a more unique ID using a timestamp and a random number
     const uniqueOrderId = `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 
     const order = {
@@ -79,14 +142,58 @@ const OrderPage = () => {
 
       <h2 className="text-2xl font-bold mb-4">Customer Details</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <input type="text" name="name" placeholder="Customer Name" className="p-2 border rounded" onChange={handleChange} value={customerDetails.name} />
-        <input type="text" name="mobile" placeholder="Mobile Number" className="p-2 border rounded" onChange={handleChange} value={customerDetails.mobile} />
-        <select name="deliveryType" className="p-2 border rounded" onChange={handleChange} value={customerDetails.deliveryType}>
+        
+        {/* Customer Name Input */}
+        <div>
+            <input 
+                type="text" 
+                name="name" 
+                placeholder="Customer Name (Min 5 words, No special chars)" 
+                className={`p-2 border rounded w-full ${formErrors.name ? 'border-red-500' : 'border-gray-300'}`} 
+                onChange={handleChange} 
+                value={customerDetails.name} 
+            />
+            {formErrors.name && <p className="text-red-500 text-xs mt-1">{formErrors.name}</p>}
+        </div>
+
+        {/* Mobile Number Input */}
+        <div>
+            <input 
+                type="text" // Using text to show custom error, but number input is better for mobile keyboards
+                name="mobile" 
+                placeholder="Mobile Number (10 digits)" 
+                className={`p-2 border rounded w-full ${formErrors.mobile ? 'border-red-500' : 'border-gray-300'}`} 
+                onChange={handleChange} 
+                value={customerDetails.mobile} 
+                maxLength="10"
+            />
+            {formErrors.mobile && <p className="text-red-500 text-xs mt-1">{formErrors.mobile}</p>}
+        </div>
+        
+        {/* Delivery Type Dropdown */}
+        <select 
+            name="deliveryType" 
+            className="p-2 border rounded" 
+            onChange={handleChange} 
+            value={customerDetails.deliveryType}
+        >
           <option value="homedelivery">Home Delivery</option>
           <option value="pickup">Pickup</option>
         </select>
+        
+        {/* Address Input (Conditional) */}
         {customerDetails.deliveryType === 'homedelivery' && (
-          <input type="text" name="address" placeholder="Delivery Address" className="p-2 border rounded col-span-1 md:col-span-2" onChange={handleChange} value={customerDetails.address} />
+          <div className="col-span-1 md:col-span-2">
+            <input 
+                type="text" 
+                name="address" 
+                placeholder="Delivery Address (Minimum 10 characters)" 
+                className={`p-2 border rounded w-full ${formErrors.address ? 'border-red-500' : 'border-gray-300'}`} 
+                onChange={handleChange} 
+                value={customerDetails.address} 
+            />
+            {formErrors.address && <p className="text-red-500 text-xs mt-1">{formErrors.address}</p>}
+          </div>
         )}
       </div>
 
